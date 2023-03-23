@@ -11,11 +11,12 @@ const dicesAnimals = {
 }
 
 // Initialisation aléatoire des dés jaunes : nombre compris entre 1 et 3 inclus
-// Calcul du nombre d'animaux (d'une espèce) à chercher
 
 for(let i in dicesYellow) {
     dicesYellow[i] = getRandomIntInclusive(1,3)
 }
+
+// Calcul du nombre d'animaux (d'une espèce) à chercher
 
 let nbAnimalsToSearch
 if(dicesYellow[0]===dicesYellow[1]) {
@@ -26,13 +27,15 @@ else {
 }
 
 // Initialisation aléatoire des dés animaux : nombre compris entre 0 et 2 inclus
-// Calcul de l'animal ciblé par les braconniers
+
 
 for(let couleur in dicesAnimals) {
     for(let i in dicesAnimals[couleur]) {
         dicesAnimals[couleur][i] = getRandomIntInclusive(0,2)
     }
 }
+
+// Calcul de l'animal ciblé par les braconniers
 
 let animalTarget
 if(dicesAnimals.red[0]===dicesAnimals.red[1]) {
@@ -47,15 +50,15 @@ else {
 
 
 
-// Affichage  du résultat du lancé de dés :
+// Affichage du résultat du lancé des dés, de leur traitement et de la solution :
 
-let msg = "Résultat du lancé de dés : \n\n"
-msg += "Balles : " + afficheBulets(dicesYellow) + " (Nombre d'animaux à chercher : " + nbAnimalsToSearch +")\n"
-msg += "Animaux : " + afficheAnimaux(dicesAnimals.white) + "\n"
+let msg = "Algorithme : \n\n"
+msg += "Balles : " + afficheBulets(dicesYellow) +"\n"
+msg += " -> Nombre d'animaux à chercher : " + nbAnimalsToSearch +"\n\n"
+msg += "Liste initiale des animaux :\n" + afficheAnimaux(dicesAnimals.white) + "\n\n"
 msg += "Braconniers : " + afficheAnimaux(dicesAnimals.red) + "\n"
-msg += "Garde chasse : " + afficheAnimaux(dicesAnimals.green) + "\n\n"
-msg += "Traitement des données :\n\n"
-msg += "Animal ciblé par les braconniers : " + animals[animalTarget]
+msg += " -> Animal ciblé par les braconniers : " + animals[animalTarget] + "\n\n"
+msg += "Garde chasse : " + afficheAnimaux(dicesAnimals.green) + "\n"
 
 console.log(msg)
 
