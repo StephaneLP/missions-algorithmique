@@ -1,49 +1,63 @@
-// Tableau contenant les animaux et les variables recevant le résultat du lancé des dés
+// Tableau contenant les animaux
+// Variable recevant le résultat du lancé des dés jaunes : 2 jaunes
+// Variable recevant le résultat du lancé des dés animaux: 5 blancs, 2 rouges, 1 vert
 
-const animaux = ["Antilope","Gnou","Rhinocéros"]
-const desJaunes = [0,0]
-const desAnimaux = {
-    blancs: ["","","","",""],
-    rouges: ["",""],
-    vert: ""
+const animals = ["Antilope","Gnou","Rhinocéros"]
+const dicesYellow = [0,0]
+const dicesAnimals = {
+    white: [0,0,0,0,0],
+    red: [0,0],
+    green: [0]
 }
 
-// Initialisation des dés jaunes et calcul du nombre d'animaux (d'une espèce) à chercher
+// Initialisation aléatoire des dés jaunes : nombre compris entre 1 et 3 inclus
+// Calcul du nombre d'animaux (d'une espèce) à chercher
 
-for(let i=0; i<2; i++) desJaunes[i] = getRandomIntInclusive(1,3)
-let nbAnimauxAChercher = (desJaunes[0]===desJaunes[1] ? desJaunes[0] : 6-(desJaunes[0]+desJaunes[1]))
+for(let i in dicesYellow) {
+    dicesYellow[i] = getRandomIntInclusive(1,3)
+}
 
-// Initialisation des dés animaux
+let nbAnimalsToSearch
+if(dicesYellow[0]===dicesYellow[1]) {
+    nbAnimalsToSearch = dicesYellow[0]
+}
+else {
+    nbAnimalsToSearch = 6 - (dicesYellow[0] + dicesYellow[1])
+}
 
-for(let couleur in desAnimaux) {
-console.log(desAnimaux[couleur])
-    // for(let i in desAnimaux[couleur]){
-    //     console.log(i)
-    //     desAnimaux.couleur[i] = animaux[getRandomIntInclusive(0,2)]
-    //     console.log(desAnimaux.couleur[i])
-    // }
+// Initialisation aléatoire des dés animaux : nombre compris entre 0 et 2 inclus
+// Calcul de l'animal ciblé par les braconniers
+
+for(let couleur in dicesAnimals) {
+    for(let i in dicesAnimals[couleur]) {
+        dicesAnimals[couleur][i] = getRandomIntInclusive(0,2)
+    }
+}
+
+let animalTarget
+if(dicesAnimals.red[0]===dicesAnimals.red[1]) {
+    animalTarget = dicesAnimals.red[0]
+}
+else {
+    animalTarget = 3 - (dicesAnimals.red[0] + dicesAnimals.red[1])
 }
 
 
 
-// for(let i=0; i<5; i++) {
-//     lanceDeDes.désBlancs[i] = animaux[getRandomIntInclusive(0,2)]
-// }
-// for(let i=0; i<2; i++) {
-//     lanceDeDes.désRouges[i] = animaux[getRandomIntInclusive(0,2)]
-// }
-// lanceDeDes.déVert = animaux[getRandomIntInclusive(0,2)]
-
-// Calcul du nombre d'animaux à chercher
 
 
 
 // Affichage  du résultat du lancé de dés :
 
-console.log("Balles : ", afficheTableau(desJaunes), "(Nombre d'animaux à chercher : ", nbAnimauxAChercher,")")
-console.log("Animaux : ", afficheTableau(desAnimaux.blancs))
-console.log("Braconniers : ", afficheTableau(desAnimaux.rouges))
-console.log("Garde chasse : ", desAnimaux.vert)
+let msg = "Résultat du lancé de dés : \n\n"
+msg += "Balles : " + afficheBulets(dicesYellow) + " (Nombre d'animaux à chercher : " + nbAnimalsToSearch +")\n"
+msg += "Animaux : " + afficheAnimaux(dicesAnimals.white) + "\n"
+msg += "Braconniers : " + afficheAnimaux(dicesAnimals.red) + "\n"
+msg += "Garde chasse : " + afficheAnimaux(dicesAnimals.green) + "\n\n"
+msg += "Traitement des données :\n\n"
+msg += "Animal ciblé par les braconniers : " + animals[animalTarget]
+
+console.log(msg)
 
 // Outils
 
@@ -53,11 +67,21 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min +1)) + min
 }
 
-function afficheTableau(tab) {
+function afficheBulets(tab) {
     let res = ""
     let separateur = ""
     for(let i in tab) {
         res += separateur + tab[i]
+        separateur = " - "
+    }
+    return res
+}
+
+function afficheAnimaux(tab) {
+    let res = ""
+    let separateur = ""
+    for(let i in tab) {
+        res += separateur + animals[tab[i]]
         separateur = " - "
     }
     return res
