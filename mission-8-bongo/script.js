@@ -1,68 +1,118 @@
-// Tableau contenant les animaux
-// Variable recevant le résultat du lancé des dés jaunes : 2 jaunes
-// Variable recevant le résultat du lancé des dés animaux: 5 blancs, 2 rouges, 1 vert
+/////////////////////////////////////////////////////////
+// Déclaration des données du problème
+/////////////////////////////////////////////////////////
 
-const animals = ["Antilope","Gnou","Rhinocéros"]
-const dicesYellow = [0,0]
-const dicesAnimals = {
-    white: [0,0,0,0,0],
-    red: [0,0],
-    green: [0]
+const nomAnimaux = ["Antilope","Gnou","Rhinocéros"]
+const desJaunes = [0,0]
+const desAnimaux = {
+    beige: [0,0,0,0,0],
+    rouge: [0,0],
+    vert: [0]
 }
 
-// Initialisation aléatoire des dés jaunes : nombre compris entre 1 et 3 inclus
+/////////////////////////////////////////////////////////
+// ALGORITHME
+/////////////////////////////////////////////////////////
 
-for(let i in dicesYellow) {
-    dicesYellow[i] = getRandomIntInclusive(1,3)
-}
+// Jeté des dés jaunes, beiges , rouges et vert
 
-// Calcul du nombre d'animaux (d'une espèce) à chercher
+desJaunes[0] = getRandomIntInclusive(1,3)
+desJaunes[1] = getRandomIntInclusive(1,3)
 
-let nbAnimalsToSearch
-if(dicesYellow[0]===dicesYellow[1]) {
-    nbAnimalsToSearch = dicesYellow[0]
-}
-else {
-    nbAnimalsToSearch = 6 - (dicesYellow[0] + dicesYellow[1])
-}
-
-// Initialisation aléatoire des dés animaux : nombre compris entre 0 et 2 inclus
-
-
-for(let couleur in dicesAnimals) {
-    for(let i in dicesAnimals[couleur]) {
-        dicesAnimals[couleur][i] = getRandomIntInclusive(0,2)
+for(let couleur in desAnimaux) {
+    for(let i in desAnimaux[couleur]) {
+        desAnimaux[couleur][i] = getRandomIntInclusive(0,2)
     }
 }
 
-// Calcul de l'animal ciblé par les braconniers
+// Animaux ciblés par les braconniers et par le garde-chasse
 
 let animalTarget
-if(dicesAnimals.red[0]===dicesAnimals.red[1]) {
-    animalTarget = dicesAnimals.red[0]
+if(desAnimaux.rouge[0]===desAnimaux.rouge[1]) {
+    animalTarget = desAnimaux.rouge[0]
 }
 else {
-    animalTarget = 3 - (dicesAnimals.red[0] + dicesAnimals.red[1])
+    animalTarget = 3 - (desAnimaux.rouge[0] + desAnimaux.rouge[1])
 }
 
+// Liste finale des animaux : modifiée si les braconniers réussissent
 
+let listeFinaleAnimaux = [...desAnimaux.beige]
+let blnListeModifiee = false
+if((desAnimaux.vert!=animalTarget)&&(listeFinaleAnimaux.includes(animalTarget))) {
+    supprAnimalDansListe(animalTarget,listeFinaleAnimaux)
+    blnListeModifiee = true
+}
 
+// Calcul du nombre d'animaux identiques à chercher
 
+let nbAnimalsToSearch
+if(desJaunes[0]===desJaunes[1]) {
+    nbAnimalsToSearch = desJaunes[0]
+}
+else {
+    nbAnimalsToSearch = 6 - (desJaunes[0] + desJaunes[1])
+}
 
+// Résolution du problème
 
-// Affichage du résultat du lancé des dés, de leur traitement et de la solution :
+let animauxCandidats = []
+for(let index in nomAnimaux) {
+    if(listeFinaleAnimaux.filter(el => el == index).length == nbAnimalsToSearch) {
+        animauxCandidats.push(index)
+    }
+}
 
-let msg = "Algorithme : \n\n"
-msg += "Balles : " + afficheBulets(dicesYellow) +"\n"
-msg += " -> Nombre d'animaux à chercher : " + nbAnimalsToSearch +"\n\n"
-msg += "Liste initiale des animaux :\n" + afficheAnimaux(dicesAnimals.white) + "\n\n"
-msg += "Braconniers : " + afficheAnimaux(dicesAnimals.red) + "\n"
-msg += " -> Animal ciblé par les braconniers : " + animals[animalTarget] + "\n\n"
-msg += "Garde chasse : " + afficheAnimaux(dicesAnimals.green) + "\n"
+let candidats, solution
+switch(animauxCandidats.length) {
+    case 0:
+        candidats = "Aucun"
+        solution = candidats
+        break
+    case 1:
+        candidats = nomAnimaux[animauxCandidats[0]]
+        solution = candidats
+        break
+    case 2:
+        candidats = afficheListe(animauxCandidats,true)
+        let indiceSolution = (3 - animauxCandidats[0] - animauxCandidats[1])
+        solution = nomAnimaux[indiceSolution]
+        break
+}
+
+/////////////////////////////////////////////////////////
+// Affichage de la résolution et de la solution
+/////////////////////////////////////////////////////////
+
+let msg = "Données initiales : \n\n"
+msg += "Balles : " + desJaunes[0] + " - " + desJaunes[1] +"\n"
+msg += "Liste des animaux : " + afficheListe(desAnimaux.beige) + "\n"
+msg += "Braconniers : " + afficheListe(desAnimaux.rouge) + "\n"
+msg += "Garde chasse : " + afficheListe(desAnimaux.vert) + "\n\n"
+msg += "Traitement des données :\n\n"
+msg += "-> Animal ciblé par les braconniers : " + nomAnimaux[animalTarget] + "\n"
+msg += "-> Animal protégé par le garde-chasse : " + afficheListe(desAnimaux.vert) + "\n"
+if(desAnimaux.vert==animalTarget) {
+    msg += "-> Les braconniers échouent. L'animal est protégé.\n\n"    
+}
+else {
+    if(blnListeModifiee) {
+        msg += "-> Les braconniers réussissent. La liste des animaux est modifiée :\n"
+        msg += "-> Liste des animaux : " + afficheListe(listeFinaleAnimaux) + "\n\n"
+    }
+    else {
+        msg += "-> L'animal ciblé par les braconniers n'est pas dans la liste.\n\n"
+    }
+}
+msg += "-> Nombre d'animaux à chercher : " + nbAnimalsToSearch +"\n"
+msg += "-> Animaux présents " + nbAnimalsToSearch + " fois : " + candidats + "\n\n"
+msg += "Solution : " + solution
 
 console.log(msg)
 
+/////////////////////////////////////////////////////////
 // Outils
+/////////////////////////////////////////////////////////
 
 function getRandomIntInclusive(min, max) {
     min = Math.ceil(min)
@@ -70,21 +120,20 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min +1)) + min
 }
 
-function afficheBulets(tab) {
-    let res = ""
-    let separateur = ""
-    for(let i in tab) {
-        res += separateur + tab[i]
-        separateur = " - "
+function supprAnimalDansListe(target,tab) {
+    for(let indice in tab) {
+        if(target==tab[indice]) {
+            tab.splice(indice,1)
+            break
+        }
     }
-    return res
 }
 
-function afficheAnimaux(tab) {
+function afficheListe(tab) {
     let res = ""
     let separateur = ""
     for(let i in tab) {
-        res += separateur + animals[tab[i]]
+        res += separateur + nomAnimaux[tab[i]]
         separateur = " - "
     }
     return res
